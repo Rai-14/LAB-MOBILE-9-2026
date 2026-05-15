@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">tugas1</string>
+    <string name="name">Dwi Wahyu Ilahi</string>
+    <string name="username">wahil</string>
+    <string name="bio">All Hail</string>
+    <string name="running_threads">Running Threads</string>
+    <string name="stats">7 tayangan dalam 30 hari terakhir</string>
+    <string name="followers_count">159 pengikut</string>
+    <string name="edit_profile">Edit profil</string>
+    <string name="share_profile">Bagikan profil</string>
+    <string name="tab_threads">Threads</string>
+    <string name="tab_replies">Balasan</string>
+    <string name="tab_media">Media</string>
+    <string name="tab_reposts">Postingan</string>
+    <string name="post_time">10/27/25</string>
+    <string name="post_placeholder">Apa yang baru?</string>
+
+    <string name="done">Selesai</string>
+    <string name="label_name">Nama</string>
+    <string name="label_username">Username</string>
+    <string name="label_bio">Bio</string>
+    <string name="label_interests">Minat</string>
+    <string name="label_link">Tautan</string>
+    <string name="label_podcast">Podcast</string>
+    <string name="hint_name">Tulis nama</string>
+    <string name="hint_username">Tulis username</string>
+    <string name="hint_bio">+ Tulis bio</string>
+    <string name="hint_interests">+ Tambahkan minat</string>
+    <string name="hint_link">+ Tambahkan tautan</string>
+    <string name="hint_podcast">+ Tautan ke podcast Anda</string>
+    <string name="label_insta_badge">Tampilkan lencana Instagram</string>
+    <string name="label_private_profile">Profil privat</string>
+    <string name="desc_private_profile">Jika Anda mengubah ke privat, hanya pengikut yang bisa melihat thread Anda. Balasan Anda akan bisa dilihat oleh pengikut dan profil individu yang Anda balas.</string>
+</resources>

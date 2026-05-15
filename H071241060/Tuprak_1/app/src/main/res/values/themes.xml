@@ -1,0 +1,13 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Tuprak_1" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/linkedin_blue</item>
+    </style>
+
+    <style name="Theme.Tuprak_1" parent="Base.Theme.Tuprak_1" />
+
+    <style name="CircleShape" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#191C1F"> <LinearLayout
+    android:id="@+id/header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:gravity="center_vertical">
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@android:drawable/ic_menu_revert" /> <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Edit intro"
+    android:textColor="#FFFFFF"
+    android:textSize="20sp"
+    android:layout_marginStart="24dp"/>
+</LinearLayout>
+
+    <View
+        android:id="@+id/dividerHeader"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#333333"
+        android:layout_below="@id/header"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/dividerHeader"
+        android:layout_above="@+id/bottomBar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sempurnakan profil Anda dengan Premium"
+                android:textColor="#70B5F9"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="16dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#333333"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="* Wajib diisi"
+                android:textColor="#AAAAAA"
+                android:textSize="12sp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Informasi umum"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama depan*"
+                android:textColor="#AAAAAA"
+                android:textSize="14sp" />
+            <EditText
+                android:id="@+id/etNamaDepan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Haris"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#FFFFFF"
+                android:inputType="textPersonName" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5/50"
+                android:textColor="#AAAAAA"
+                android:textSize="12sp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama belakang*"
+                android:textColor="#AAAAAA"
+                android:textSize="14sp" />
+            <EditText
+                android:id="@+id/etNamaBelakang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Amir"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#FFFFFF"
+                android:inputType="textPersonName" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4/50"
+                android:textColor="#AAAAAA"
+                android:textSize="12sp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama tambahan"
+                android:textColor="#AAAAAA"
+                android:textSize="14sp" />
+            <EditText
+                android:id="@+id/etNamaTambahan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#FFFFFF"
+                android:inputType="textPersonName" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/50"
+                android:textColor="#AAAAAA"
+                android:textSize="12sp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pelafalan nama"
+                android:textColor="#AAAAAA"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+ Tambah pelafalan nama"
+                android:backgroundTint="#191C1F"
+                android:textColor="#70B5F9"
+                android:textAllCaps="false"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sapaan"
+                android:textColor="#AAAAAA"
+                android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tvSapaan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ia/Dia (Pria)"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:layout_marginBottom="16dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#FFFFFF"
+                android:layout_marginBottom="24dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="16dp"
+        android:background="#191C1F"
+        android:elevation="8dp">
+        <Button
+            android:id="@+id/btnSimpan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Simpan"
+            android:backgroundTint="#70B5F9"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:padding="12dp"/>
+    </LinearLayout>
+
+</RelativeLayout>
