@@ -1,10 +1,6 @@
 package com.example.finallabh071241050.ui;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,11 +39,9 @@ public class HomeFragment extends Fragment {
     private MealAdapter adapter;
     private SwipeRefreshLayout swipeRefresh;
     private EditText etSearch;
-    private LinearLayout layoutError; // Tambahan
-    private Button btnRetry;          // Tambahan
-
-    private final Handler searchHandler = new Handler(Looper.getMainLooper());
-    private Runnable searchRunnable;
+    private Button btnSearch;
+    private LinearLayout layoutError;
+    private Button btnRetry;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,34 +53,26 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rvMeals = view.findViewById(R.id.rv_meals);
-        rvMeals.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        rvMeals.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new MealAdapter(new ArrayList<>());
         rvMeals.setAdapter(adapter);
 
         swipeRefresh = view.findViewById(R.id.swipe_refresh);
         etSearch = view.findViewById(R.id.et_search);
-        layoutError = view.findViewById(R.id.layout_error); // Link layout error
-        btnRetry = view.findViewById(R.id.btn_retry);       // Link button retry
+        btnSearch = view.findViewById(R.id.btn_search);
+        layoutError = view.findViewById(R.id.layout_error);
+        btnRetry = view.findViewById(R.id.btn_retry);
 
         swipeRefresh.setOnRefreshListener(this::fetchMeals);
-        btnRetry.setOnClickListener(v -> fetchMeals());    // Aksi Retry
+        btnRetry.setOnClickListener(v -> fetchMeals());
 
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                searchHandler.removeCallbacks(searchRunnable);
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                String query = s.toString().trim();
-                if (query.isEmpty()) {
-                    fetchMeals();
-                } else {
-                    searchRunnable = () -> performRemoteSearch(query);
-                    searchHandler.postDelayed(searchRunnable, 500);
-                }
+        // Ganti dari TextWatcher ke OnClickListener
+        btnSearch.setOnClickListener(v -> {
+            String query = etSearch.getText().toString().trim();
+            if (!query.isEmpty()) {
+                performRemoteSearch(query);
+            } else {
+                fetchMeals(); // Reset ke daftar awal jika pencarian kosong
             }
         });
 
@@ -99,22 +85,23 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<MealResponse> call, @NonNull Response<MealResponse> response) {
                 swipeRefresh.setRefreshing(false);
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Meal> meals = response.body().meals;
-                    if (meals != null) {
-                        layoutError.setVisibility(View.GONE);
-                        rvMeals.setVisibility(View.VISIBLE);
-                        adapter.updateData(meals);
-                    } else {
-                        Toast.makeText(getContext(), "Tidak ditemukan hasil", Toast.LENGTH_SHORT).show();
-                    }
+                if (response.isSuccessful() && response.body() != null && response.body().meals != null) {
+                    layoutError.setVisibility(View.GONE);
+                    rvMeals.setVisibility(View.VISIBLE);
+                    adapter.updateData(response.body().meals);
+                } else {
+                    layoutError.setVisibility(View.VISIBLE);
+                    rvMeals.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "Tidak ditemukan hasil", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<MealResponse> call, @NonNull Throwable t) {
                 swipeRefresh.setRefreshing(false);
-                Toast.makeText(getContext(), "Gagal mencari", Toast.LENGTH_SHORT).show();
+                layoutError.setVisibility(View.VISIBLE);
+                rvMeals.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "Gagal terhubung", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -136,13 +123,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<MealResponse> call, @NonNull Throwable t) {
                 swipeRefresh.setRefreshing(false);
-                // Menampilkan UI Error
                 layoutError.setVisibility(View.VISIBLE);
                 rvMeals.setVisibility(View.GONE);
-
-                // Memberi tahu user bahwa data yang muncul adalah data offline
-                Snackbar.make(requireView(), "Mode Offline: Menampilkan data tersimpan", Snackbar.LENGTH_LONG).show();
-
+                Snackbar.make(requireView(), "Mode Offline", Snackbar.LENGTH_LONG).show();
                 loadFromDatabase();
             }
         });
