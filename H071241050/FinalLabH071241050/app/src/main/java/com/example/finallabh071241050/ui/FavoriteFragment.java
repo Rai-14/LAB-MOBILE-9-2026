@@ -38,13 +38,10 @@ public class FavoriteFragment extends Fragment {
         tvEmpty = view.findViewById(R.id.tv_empty);
 
         rvFavorite.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        // Inisialisasi Adapter dengan list kosong
         adapter = new MealAdapter(new ArrayList<>());
         rvFavorite.setAdapter(adapter);
     }
 
-    // Gunakan onResume agar data diperbarui setiap kali fragment dibuka kembali
     @Override
     public void onResume() {
         super.onResume();
@@ -55,20 +52,20 @@ public class FavoriteFragment extends Fragment {
         Executors.newSingleThreadExecutor().execute(() -> {
             if (getContext() == null) return;
 
-            // MENGGUNAKAN getFavoriteMeals() agar hanya yang favorit yang muncul
-            List<MealEntity> localData = AppDatabase.getDatabase(getContext()).mealDao().getFavoriteMeals();
+            // Mengambil data dari DB
+            List<MealEntity> localData = AppDatabase.getInstance(getContext()).mealDao().getFavoriteMeals();
             List<Meal> mealList = new ArrayList<>();
 
-            // Mapping MealEntity ke Meal agar bisa dibaca Adapter
+            // Mapping: PENTING - Pastikan semua field terisi agar Adapter bisa menampilkan data
             for (MealEntity e : localData) {
                 Meal m = new Meal();
                 m.idMeal = e.idMeal;
                 m.strMeal = e.strMeal;
                 m.strMealThumb = e.strMealThumb;
+                m.strCategory = e.strCategory; // JANGAN LUPA INI
                 mealList.add(m);
             }
 
-            // Update UI di Main Thread
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     if (mealList.isEmpty()) {

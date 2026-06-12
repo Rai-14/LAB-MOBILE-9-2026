@@ -12,7 +12,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -44,6 +43,9 @@ dependencies {
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
+
+    // Splash Screen API
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // UI & Core
     implementation(libs.activity.ktx)

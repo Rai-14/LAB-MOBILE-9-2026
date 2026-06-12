@@ -13,11 +13,9 @@ public interface MealDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(List<MealEntity> meals);
 
-    // Tetap gunakan REPLACE untuk favorit agar saat diklik bisa toggle true/false
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MealEntity meal);
 
-    // Tambahkan method ini jika sewaktu-waktu ingin update data spesifik
     @Update
     void update(MealEntity meal);
 
@@ -29,4 +27,19 @@ public interface MealDao {
 
     @Query("SELECT * FROM meal_table WHERE idMeal = :id LIMIT 1")
     MealEntity getMealById(String id);
+
+    @Query("SELECT COUNT(*) FROM meal_table WHERE isFavorite = 1")
+    int countFavorites();
+
+    @Query("SELECT COUNT(*) FROM meal_table WHERE isTried = 1")
+    int countTried();
+
+    @Query("SELECT COUNT(DISTINCT strCategory) FROM meal_table")
+    int countCategories();
+
+    @Query("SELECT COUNT(*) FROM meal_table")
+    int countTotal();
+
+    @Query("SELECT * FROM meal_table ORDER BY lastViewed DESC LIMIT 5")
+    List<MealEntity> getRecentMeals();
 }

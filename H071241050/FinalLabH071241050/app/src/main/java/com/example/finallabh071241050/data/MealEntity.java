@@ -9,12 +9,15 @@ public class MealEntity {
     @PrimaryKey
     @NonNull
     public String idMeal;
+
     public String strMeal;
     public String strMealThumb;
-
-    // Field baru untuk menyimpan detail agar bisa diakses offline
     public String strInstructions;
     public String strIngredients;
 
+    public String strCategory;
+
     public boolean isFavorite = false;
+    public boolean isTried = false;
+    public long lastViewed = 0;
 }

@@ -33,7 +33,7 @@ public class DetailFragment extends Fragment {
     private TextView tvName, tvInstructions, tvIngredients;
     private Meal currentMeal;
     private boolean isFavStatus = false;
-    private String mealId; // Simpan ID sebagai variabel global
+    private String mealId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,14 +70,14 @@ public class DetailFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null && response.body().meals != null) {
                     currentMeal = response.body().meals.get(0);
                     displayData(currentMeal);
-                    saveDetailToDatabase(currentMeal); // Simpan ke DB saat Online
-                    checkFavoriteStatus(id); // Cek status fav setelah data dimuat
+                    // PENTING: Update database dengan data terbaru + waktu dilihat
+                    saveDetailToDatabase(currentMeal);
+                    checkFavoriteStatus(id);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<MealResponse> call, @NonNull Throwable t) {
-                // JIKA GAGAL/OFFLINE: Load dari Database
                 loadDetailFromDatabase(id);
             }
         });
@@ -90,22 +90,23 @@ public class DetailFragment extends Fragment {
         Glide.with(this).load(meal.strMealThumb).into(imgMeal);
     }
 
-    // --- FUNGSI OFFLINE/DATABASE ---
+    // --- FUNGSI OFFLINE/DATABASE YANG DIPERBAIKI ---
 
     private void saveDetailToDatabase(Meal meal) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase db = AppDatabase.getDatabase(getContext());
+            AppDatabase db = AppDatabase.getInstance(getContext());
             MealEntity existing = db.mealDao().getMealById(meal.idMeal);
 
-            MealEntity entity = new MealEntity();
+            MealEntity entity = (existing != null) ? existing : new MealEntity();
             entity.idMeal = meal.idMeal;
             entity.strMeal = meal.strMeal;
             entity.strMealThumb = meal.strMealThumb;
             entity.strInstructions = meal.strInstructions;
             entity.strIngredients = meal.getIngredients();
 
-            // Jaga status favorit tetap ada
-            entity.isFavorite = (existing != null && existing.isFavorite);
+            // Wajib ditambahkan agar ProfileFragment bisa membaca data
+            entity.strCategory = meal.strCategory;
+            entity.lastViewed = System.currentTimeMillis();
 
             db.mealDao().insert(entity);
         });
@@ -113,8 +114,12 @@ public class DetailFragment extends Fragment {
 
     private void loadDetailFromDatabase(String id) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            MealEntity entity = AppDatabase.getDatabase(getContext()).mealDao().getMealById(id);
+            MealEntity entity = AppDatabase.getInstance(getContext()).mealDao().getMealById(id);
             if (entity != null && getActivity() != null) {
+                // Saat load offline, update juga lastViewed agar masuk list "Terakhir Dilihat"
+                entity.lastViewed = System.currentTimeMillis();
+                AppDatabase.getInstance(getContext()).mealDao().update(entity);
+
                 getActivity().runOnUiThread(() -> {
                     tvName.setText(entity.strMeal);
                     tvInstructions.setText(entity.strInstructions);
@@ -122,7 +127,7 @@ public class DetailFragment extends Fragment {
                     Glide.with(this).load(entity.strMealThumb).into(imgMeal);
                     isFavStatus = entity.isFavorite;
                     updateFavoriteIcon();
-                    Toast.makeText(getContext(), "Mode Offline: Menampilkan data tersimpan", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Mode Offline: Data terakhir", Toast.LENGTH_SHORT).show();
                 });
             }
         });
@@ -130,7 +135,7 @@ public class DetailFragment extends Fragment {
 
     private void checkFavoriteStatus(String id) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            MealEntity entity = AppDatabase.getDatabase(getContext()).mealDao().getMealById(id);
+            MealEntity entity = AppDatabase.getInstance(getContext()).mealDao().getMealById(id);
             if (entity != null) {
                 isFavStatus = entity.isFavorite;
                 if (getActivity() != null) getActivity().runOnUiThread(this::updateFavoriteIcon);
@@ -144,7 +149,7 @@ public class DetailFragment extends Fragment {
         updateFavoriteIcon();
 
         Executors.newSingleThreadExecutor().execute(() -> {
-            AppDatabase db = AppDatabase.getDatabase(getContext());
+            AppDatabase db = AppDatabase.getInstance(getContext());
             MealEntity entity = db.mealDao().getMealById(currentMeal.idMeal);
 
             if (entity == null) {
@@ -154,8 +159,11 @@ public class DetailFragment extends Fragment {
                 entity.strMealThumb = currentMeal.strMealThumb;
                 entity.strInstructions = currentMeal.strInstructions;
                 entity.strIngredients = currentMeal.getIngredients();
+                entity.strCategory = currentMeal.strCategory;
             }
             entity.isFavorite = isFavStatus;
+            // Pastikan lastViewed tetap terupdate saat difavoritkan
+            entity.lastViewed = System.currentTimeMillis();
             db.mealDao().insert(entity);
         });
     }

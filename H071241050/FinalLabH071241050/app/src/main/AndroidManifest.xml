@@ -12,18 +12,14 @@
         android:theme="@style/Theme.FinalLabH071241050">
 
         <activity
-            android:name=".ui.SplashScreenActivity"
+            android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.FinalLabH071241050">
+            android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
 
     </application>
 </manifest>

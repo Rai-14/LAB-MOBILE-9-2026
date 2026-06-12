@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Switch;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation; // Pastikan import ini ada
 import com.example.finallabh071241050.R;
 
 public class SettingsFragment extends Fragment {
@@ -22,6 +24,12 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Inisialisasi Tombol Kembali
+        ImageView ivBack = view.findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
+
+        // Inisialisasi Switch Tema
         Switch switchTheme = view.findViewById(R.id.switch_theme);
 
         // Cara akurat mengecek apakah sistem sedang dalam Dark Mode

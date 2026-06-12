@@ -66,13 +66,12 @@ public class HomeFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(this::fetchMeals);
         btnRetry.setOnClickListener(v -> fetchMeals());
 
-        // Ganti dari TextWatcher ke OnClickListener
         btnSearch.setOnClickListener(v -> {
             String query = etSearch.getText().toString().trim();
             if (!query.isEmpty()) {
                 performRemoteSearch(query);
             } else {
-                fetchMeals(); // Reset ke daftar awal jika pencarian kosong
+                fetchMeals();
             }
         });
 
@@ -142,7 +141,8 @@ public class HomeFragment extends Fragment {
                 entities.add(entity);
             }
             if (getContext() != null) {
-                AppDatabase.getDatabase(getContext()).mealDao().insertAll(entities);
+                // FIXED: Menggunakan getInstance
+                AppDatabase.getInstance(getContext()).mealDao().insertAll(entities);
             }
         });
     }
@@ -150,7 +150,8 @@ public class HomeFragment extends Fragment {
     private void loadFromDatabase() {
         Executors.newSingleThreadExecutor().execute(() -> {
             if (getContext() == null) return;
-            List<MealEntity> localData = AppDatabase.getDatabase(getContext()).mealDao().getAllMeals();
+            // FIXED: Menggunakan getInstance
+            List<MealEntity> localData = AppDatabase.getInstance(getContext()).mealDao().getAllMeals();
             List<Meal> mealList = new ArrayList<>();
             for (MealEntity e : localData) {
                 Meal m = new Meal();
