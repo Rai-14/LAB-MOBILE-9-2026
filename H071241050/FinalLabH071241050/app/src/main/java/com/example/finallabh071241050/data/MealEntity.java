@@ -12,6 +12,9 @@ public class MealEntity {
     public String strMeal;
     public String strMealThumb;
 
-    // Tambahkan field ini
+    // Field baru untuk menyimpan detail agar bisa diakses offline
+    public String strInstructions;
+    public String strIngredients;
+
     public boolean isFavorite = false;
 }

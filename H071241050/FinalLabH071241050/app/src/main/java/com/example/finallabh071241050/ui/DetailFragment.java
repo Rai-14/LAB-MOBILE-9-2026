@@ -6,10 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
 import com.bumptech.glide.Glide;
 import com.example.finallabh071241050.R;
 import com.example.finallabh071241050.data.AppDatabase;
@@ -17,17 +20,20 @@ import com.example.finallabh071241050.data.MealEntity;
 import com.example.finallabh071241050.model.Meal;
 import com.example.finallabh071241050.model.MealResponse;
 import com.example.finallabh071241050.network.ApiClient;
+
 import java.util.concurrent.Executors;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailFragment extends Fragment {
 
-    private ImageView imgMeal, ivFavorite, ivBack; // Tambah ivBack
+    private ImageView imgMeal, ivFavorite, ivBack;
     private TextView tvName, tvInstructions, tvIngredients;
     private Meal currentMeal;
     private boolean isFavStatus = false;
+    private String mealId; // Simpan ID sebagai variabel global
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,23 +49,19 @@ public class DetailFragment extends Fragment {
         tvInstructions = view.findViewById(R.id.tv_detail_instructions);
         tvIngredients = view.findViewById(R.id.tv_detail_ingredients);
         ivFavorite = view.findViewById(R.id.iv_favorite);
-        ivBack = view.findViewById(R.id.iv_back); // Inisialisasi ivBack
+        ivBack = view.findViewById(R.id.iv_back);
 
-        // Logika tombol kembali
         ivBack.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
         if (getArguments() != null) {
-            String mealId = getArguments().getString("EXTRA_ID");
+            mealId = getArguments().getString("EXTRA_ID");
             if (mealId != null) {
                 fetchMealDetail(mealId);
-                checkFavoriteStatus(mealId);
             }
         }
 
         ivFavorite.setOnClickListener(v -> toggleFavorite());
     }
-
-    // ... (fungsi lainnya seperti fetchMealDetail, checkFavoriteStatus, toggleFavorite, updateFavoriteIcon tetap sama)
 
     private void fetchMealDetail(String id) {
         ApiClient.getInstance().getMealDetail(id).enqueue(new Callback<MealResponse>() {
@@ -67,23 +69,71 @@ public class DetailFragment extends Fragment {
             public void onResponse(@NonNull Call<MealResponse> call, @NonNull Response<MealResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().meals != null) {
                     currentMeal = response.body().meals.get(0);
-                    tvName.setText(currentMeal.strMeal);
-                    Glide.with(DetailFragment.this).load(currentMeal.strMealThumb).into(imgMeal);
-                    tvInstructions.setText(currentMeal.strInstructions);
-                    tvIngredients.setText(currentMeal.getIngredients());
+                    displayData(currentMeal);
+                    saveDetailToDatabase(currentMeal); // Simpan ke DB saat Online
+                    checkFavoriteStatus(id); // Cek status fav setelah data dimuat
                 }
             }
+
             @Override
-            public void onFailure(@NonNull Call<MealResponse> call, @NonNull Throwable t) { }
+            public void onFailure(@NonNull Call<MealResponse> call, @NonNull Throwable t) {
+                // JIKA GAGAL/OFFLINE: Load dari Database
+                loadDetailFromDatabase(id);
+            }
+        });
+    }
+
+    private void displayData(Meal meal) {
+        tvName.setText(meal.strMeal);
+        tvInstructions.setText(meal.strInstructions);
+        tvIngredients.setText(meal.getIngredients());
+        Glide.with(this).load(meal.strMealThumb).into(imgMeal);
+    }
+
+    // --- FUNGSI OFFLINE/DATABASE ---
+
+    private void saveDetailToDatabase(Meal meal) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            AppDatabase db = AppDatabase.getDatabase(getContext());
+            MealEntity existing = db.mealDao().getMealById(meal.idMeal);
+
+            MealEntity entity = new MealEntity();
+            entity.idMeal = meal.idMeal;
+            entity.strMeal = meal.strMeal;
+            entity.strMealThumb = meal.strMealThumb;
+            entity.strInstructions = meal.strInstructions;
+            entity.strIngredients = meal.getIngredients();
+
+            // Jaga status favorit tetap ada
+            entity.isFavorite = (existing != null && existing.isFavorite);
+
+            db.mealDao().insert(entity);
+        });
+    }
+
+    private void loadDetailFromDatabase(String id) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            MealEntity entity = AppDatabase.getDatabase(getContext()).mealDao().getMealById(id);
+            if (entity != null && getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    tvName.setText(entity.strMeal);
+                    tvInstructions.setText(entity.strInstructions);
+                    tvIngredients.setText(entity.strIngredients);
+                    Glide.with(this).load(entity.strMealThumb).into(imgMeal);
+                    isFavStatus = entity.isFavorite;
+                    updateFavoriteIcon();
+                    Toast.makeText(getContext(), "Mode Offline: Menampilkan data tersimpan", Toast.LENGTH_SHORT).show();
+                });
+            }
         });
     }
 
     private void checkFavoriteStatus(String id) {
         Executors.newSingleThreadExecutor().execute(() -> {
             MealEntity entity = AppDatabase.getDatabase(getContext()).mealDao().getMealById(id);
-            isFavStatus = (entity != null && entity.isFavorite);
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(this::updateFavoriteIcon);
+            if (entity != null) {
+                isFavStatus = entity.isFavorite;
+                if (getActivity() != null) getActivity().runOnUiThread(this::updateFavoriteIcon);
             }
         });
     }
@@ -94,13 +144,19 @@ public class DetailFragment extends Fragment {
         updateFavoriteIcon();
 
         Executors.newSingleThreadExecutor().execute(() -> {
-            MealEntity entity = new MealEntity();
-            entity.idMeal = currentMeal.idMeal;
-            entity.strMeal = currentMeal.strMeal;
-            entity.strMealThumb = currentMeal.strMealThumb;
-            entity.isFavorite = isFavStatus;
+            AppDatabase db = AppDatabase.getDatabase(getContext());
+            MealEntity entity = db.mealDao().getMealById(currentMeal.idMeal);
 
-            AppDatabase.getDatabase(getContext()).mealDao().insert(entity);
+            if (entity == null) {
+                entity = new MealEntity();
+                entity.idMeal = currentMeal.idMeal;
+                entity.strMeal = currentMeal.strMeal;
+                entity.strMealThumb = currentMeal.strMealThumb;
+                entity.strInstructions = currentMeal.strInstructions;
+                entity.strIngredients = currentMeal.getIngredients();
+            }
+            entity.isFavorite = isFavStatus;
+            db.mealDao().insert(entity);
         });
     }
 

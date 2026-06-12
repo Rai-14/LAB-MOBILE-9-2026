@@ -8,7 +8,9 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,7 @@ import com.example.finallabh071241050.data.MealEntity;
 import com.example.finallabh071241050.model.Meal;
 import com.example.finallabh071241050.model.MealResponse;
 import com.example.finallabh071241050.network.ApiClient;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,8 @@ public class HomeFragment extends Fragment {
     private MealAdapter adapter;
     private SwipeRefreshLayout swipeRefresh;
     private EditText etSearch;
+    private LinearLayout layoutError; // Tambahan
+    private Button btnRetry;          // Tambahan
 
     private final Handler searchHandler = new Handler(Looper.getMainLooper());
     private Runnable searchRunnable;
@@ -54,27 +59,25 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rvMeals = view.findViewById(R.id.rv_meals);
-
-        // PERUBAHAN UTAMA DI SINI: Menggunakan VERTICAL agar scroll ke bawah
         rvMeals.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-
         adapter = new MealAdapter(new ArrayList<>());
         rvMeals.setAdapter(adapter);
 
         swipeRefresh = view.findViewById(R.id.swipe_refresh);
         etSearch = view.findViewById(R.id.et_search);
+        layoutError = view.findViewById(R.id.layout_error); // Link layout error
+        btnRetry = view.findViewById(R.id.btn_retry);       // Link button retry
 
         swipeRefresh.setOnRefreshListener(this::fetchMeals);
+        btnRetry.setOnClickListener(v -> fetchMeals());    // Aksi Retry
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 searchHandler.removeCallbacks(searchRunnable);
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 String query = s.toString().trim();
@@ -99,9 +102,10 @@ public class HomeFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Meal> meals = response.body().meals;
                     if (meals != null) {
+                        layoutError.setVisibility(View.GONE);
+                        rvMeals.setVisibility(View.VISIBLE);
                         adapter.updateData(meals);
                     } else {
-                        adapter.updateData(new ArrayList<>());
                         Toast.makeText(getContext(), "Tidak ditemukan hasil", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -110,7 +114,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<MealResponse> call, @NonNull Throwable t) {
                 swipeRefresh.setRefreshing(false);
-                Toast.makeText(getContext(), "Gagal mencari: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Gagal mencari", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -122,6 +126,8 @@ public class HomeFragment extends Fragment {
             public void onResponse(@NonNull Call<MealResponse> call, @NonNull Response<MealResponse> response) {
                 swipeRefresh.setRefreshing(false);
                 if (response.isSuccessful() && response.body() != null && response.body().meals != null) {
+                    layoutError.setVisibility(View.GONE);
+                    rvMeals.setVisibility(View.VISIBLE);
                     adapter.updateData(response.body().meals);
                     saveToDatabase(response.body().meals);
                 }
@@ -130,6 +136,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<MealResponse> call, @NonNull Throwable t) {
                 swipeRefresh.setRefreshing(false);
+                // Menampilkan UI Error
+                layoutError.setVisibility(View.VISIBLE);
+                rvMeals.setVisibility(View.GONE);
+
+                // Memberi tahu user bahwa data yang muncul adalah data offline
+                Snackbar.make(requireView(), "Mode Offline: Menampilkan data tersimpan", Snackbar.LENGTH_LONG).show();
+
                 loadFromDatabase();
             }
         });
