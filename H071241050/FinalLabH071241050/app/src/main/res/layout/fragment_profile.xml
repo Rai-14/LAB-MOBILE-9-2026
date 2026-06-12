@@ -11,84 +11,84 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <RelativeLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profil"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="?android:attr/textColorPrimary" />
-        </RelativeLayout>
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="?attr/colorPrimaryContainer">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="24dp">
-            <androidx.cardview.widget.CardView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                app:cardCornerRadius="40dp"
-                app:cardElevation="0dp">
-                <ImageView
-                    android:id="@+id/img_profile"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@mipmap/ic_launcher"
-                    android:scaleType="centerCrop"
-                    android:background="?attr/colorSurfaceVariant" />
-            </androidx.cardview.widget.CardView>
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="16dp"
-                android:orientation="vertical">
-                <EditText
-                    android:id="@+id/et_username"
-                    android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Profil Anda"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:background="@null"
-                    android:hint="Nama Anda" />
-                <EditText
-                    android:id="@+id/et_email"
+                    android:textColor="?attr/colorOnPrimaryContainer"
+                    android:layout_marginBottom="16dp"/>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:background="@null"
-                    android:hint="Email Anda"
-                    android:inputType="textEmailAddress"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="40dp"
+                        app:cardElevation="0dp">
+                        <ImageView
+                            android:id="@+id/img_profile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@mipmap/ic_launcher"
+                            android:scaleType="centerCrop"
+                            android:background="?attr/colorSurfaceVariant" />
+                    </androidx.cardview.widget.CardView>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/et_username"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:background="@null"
+                            android:textColor="?attr/colorOnPrimaryContainer"
+                            android:hint="Nama Anda" />
+                        <EditText
+                            android:id="@+id/et_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:background="@null"
+                            android:textColor="?attr/colorOnPrimaryContainer"
+                            android:hint="Email Anda"
+                            android:inputType="textEmailAddress" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Terakhir Dilihat"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Terakhir Dilihat" android:textStyle="bold" android:layout_marginBottom="8dp"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_recent_meals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Menu"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Menu" android:textStyle="bold" android:layout_marginBottom="8dp"/>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save"
             android:layout_width="match_parent"
@@ -97,7 +97,6 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:gravity="start|center_vertical"
             android:drawableStart="@android:drawable/ic_menu_edit"/>
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_go_to_settings"
             android:layout_width="match_parent"

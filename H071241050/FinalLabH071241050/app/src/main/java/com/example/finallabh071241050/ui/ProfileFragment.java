@@ -30,9 +30,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 public class ProfileFragment extends Fragment {
-
     private ImageView imgProfile;
-    private EditText etUsername, etEmail; // Menambahkan etEmail
+    private EditText etUsername, etEmail;
     private RecyclerView rvRecent;
     private String selectedImageUri = "";
     private SharedPreferences sharedPreferences;
@@ -55,20 +54,15 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         imgProfile = view.findViewById(R.id.img_profile);
         etUsername = view.findViewById(R.id.et_username);
-        etEmail = view.findViewById(R.id.et_email); // Inisialisasi etEmail
+        etEmail = view.findViewById(R.id.et_email);
         rvRecent = view.findViewById(R.id.rv_recent_meals);
-
         MaterialButton btnSave = view.findViewById(R.id.btn_save);
         MaterialButton btnSettings = view.findViewById(R.id.btn_go_to_settings);
-
         sharedPreferences = requireActivity().getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
-
         loadProfile();
         loadRecentMeals();
-
         imgProfile.setOnClickListener(v -> pickImage.launch("image/*"));
         btnSave.setOnClickListener(v -> {
             saveProfile(etUsername.getText().toString(), etEmail.getText().toString(), selectedImageUri);
@@ -80,7 +74,6 @@ public class ProfileFragment extends Fragment {
     private void loadRecentMeals() {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<MealEntity> entities = AppDatabase.getInstance(getContext()).mealDao().getRecentMeals();
-
             List<Meal> meals = new ArrayList<>();
             for (MealEntity entity : entities) {
                 Meal meal = new Meal();
@@ -90,7 +83,6 @@ public class ProfileFragment extends Fragment {
                 meal.strCategory = entity.strCategory;
                 meals.add(meal);
             }
-
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     MealAdapter adapter = new MealAdapter(meals);
@@ -103,21 +95,17 @@ public class ProfileFragment extends Fragment {
 
     private void loadProfile() {
         String username = sharedPreferences.getString("username", "Pengguna Baru");
-        String email = sharedPreferences.getString("email", ""); // Ambil dari pref
+        String email = sharedPreferences.getString("email", "");
         selectedImageUri = sharedPreferences.getString("imageUri", "");
-
         etUsername.setText(username);
-        etEmail.setText(email); // Set ke EditText
-
-        if (!selectedImageUri.isEmpty()) {
-            Glide.with(this).load(Uri.parse(selectedImageUri)).into(imgProfile);
-        }
+        etEmail.setText(email);
+        if (!selectedImageUri.isEmpty()) Glide.with(this).load(Uri.parse(selectedImageUri)).into(imgProfile);
     }
 
     private void saveProfile(String username, String email, String imageUri) {
         sharedPreferences.edit()
                 .putString("username", username)
-                .putString("email", email) // Simpan email
+                .putString("email", email)
                 .putString("imageUri", imageUri)
                 .apply();
     }

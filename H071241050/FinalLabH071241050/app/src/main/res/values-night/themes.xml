@@ -1,8 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.FinalLabH071241050" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.FinalLabH071241050" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryContainer">#5D4037</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+
         <item name="android:windowBackground">@color/background</item>
         <item name="android:textColorPrimary">@color/text_color</item>
         <item name="android:textColorSecondary">@color/text_color</item>
+        <item name="colorSurface">@color/background</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
     </style>
 </resources>

@@ -1,20 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/colorSurface">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_favorite"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp" />
-
-    <TextView
-        android:id="@+id/tv_empty"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Belum ada makanan favorit"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:layout_margin="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="?attr/colorPrimaryContainer">
 
-</RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Resep Favorit"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnPrimaryContainer" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Koleksi masakan yang sudah kamu simpan"
+                android:textSize="14sp"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                android:layout_marginTop="4dp"
+                android:alpha="0.8" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_favorite"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Belum ada makanan favorit"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:textColor="?android:attr/textColorPrimary" />
+    </FrameLayout>
+
+</LinearLayout>

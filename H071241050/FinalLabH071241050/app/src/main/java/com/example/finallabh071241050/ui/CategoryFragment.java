@@ -20,7 +20,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CategoryFragment extends Fragment {
-
     private RecyclerView rvCategories;
     private LinearLayout layoutError;
     private Button btnRetry;
@@ -36,33 +35,24 @@ public class CategoryFragment extends Fragment {
         rvCategories = view.findViewById(R.id.rv_categories);
         layoutError = view.findViewById(R.id.layout_error_category);
         btnRetry = view.findViewById(R.id.btn_retry_category);
-
         rvCategories.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
         btnRetry.setOnClickListener(v -> fetchCategories());
-
         fetchCategories();
     }
 
     private void fetchCategories() {
         layoutError.setVisibility(View.GONE);
         rvCategories.setVisibility(View.VISIBLE);
-
         ApiClient.getInstance().getCategories().enqueue(new Callback<CategoryResponse>() {
             @Override
             public void onResponse(@NonNull Call<CategoryResponse> call, @NonNull Response<CategoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     CategoryAdapter adapter = new CategoryAdapter(response.body().categories);
                     rvCategories.setAdapter(adapter);
-                } else {
-                    showError();
-                }
+                } else showError();
             }
-
             @Override
-            public void onFailure(@NonNull Call<CategoryResponse> call, @NonNull Throwable t) {
-                showError();
-            }
+            public void onFailure(@NonNull Call<CategoryResponse> call, @NonNull Throwable t) { showError(); }
         });
     }
 

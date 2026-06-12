@@ -8,14 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.example.finallabh071241050.R;
 import com.example.finallabh071241050.adapter.MealAdapter;
 import com.example.finallabh071241050.data.AppDatabase;
@@ -24,17 +22,14 @@ import com.example.finallabh071241050.model.Meal;
 import com.example.finallabh071241050.model.MealResponse;
 import com.example.finallabh071241050.network.ApiClient;
 import com.google.android.material.snackbar.Snackbar;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
-
     private RecyclerView rvMeals;
     private MealAdapter adapter;
     private SwipeRefreshLayout swipeRefresh;
@@ -51,7 +46,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         rvMeals = view.findViewById(R.id.rv_meals);
         rvMeals.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new MealAdapter(new ArrayList<>());
@@ -65,16 +59,11 @@ public class HomeFragment extends Fragment {
 
         swipeRefresh.setOnRefreshListener(this::fetchMeals);
         btnRetry.setOnClickListener(v -> fetchMeals());
-
         btnSearch.setOnClickListener(v -> {
             String query = etSearch.getText().toString().trim();
-            if (!query.isEmpty()) {
-                performRemoteSearch(query);
-            } else {
-                fetchMeals();
-            }
+            if (!query.isEmpty()) performRemoteSearch(query);
+            else fetchMeals();
         });
-
         fetchMeals();
     }
 
@@ -91,16 +80,14 @@ public class HomeFragment extends Fragment {
                 } else {
                     layoutError.setVisibility(View.VISIBLE);
                     rvMeals.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), "Tidak ditemukan hasil", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Tidak ditemukan", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<MealResponse> call, @NonNull Throwable t) {
                 swipeRefresh.setRefreshing(false);
                 layoutError.setVisibility(View.VISIBLE);
                 rvMeals.setVisibility(View.GONE);
-                Toast.makeText(getContext(), "Gagal terhubung", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -118,7 +105,6 @@ public class HomeFragment extends Fragment {
                     saveToDatabase(response.body().meals);
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<MealResponse> call, @NonNull Throwable t) {
                 swipeRefresh.setRefreshing(false);
@@ -140,17 +126,13 @@ public class HomeFragment extends Fragment {
                 entity.strMealThumb = m.strMealThumb;
                 entities.add(entity);
             }
-            if (getContext() != null) {
-                // FIXED: Menggunakan getInstance
-                AppDatabase.getInstance(getContext()).mealDao().insertAll(entities);
-            }
+            if (getContext() != null) AppDatabase.getInstance(getContext()).mealDao().insertAll(entities);
         });
     }
 
     private void loadFromDatabase() {
         Executors.newSingleThreadExecutor().execute(() -> {
             if (getContext() == null) return;
-            // FIXED: Menggunakan getInstance
             List<MealEntity> localData = AppDatabase.getInstance(getContext()).mealDao().getAllMeals();
             List<Meal> mealList = new ArrayList<>();
             for (MealEntity e : localData) {
@@ -160,9 +142,7 @@ public class HomeFragment extends Fragment {
                 m.strMealThumb = e.strMealThumb;
                 mealList.add(m);
             }
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> adapter.updateData(mealList));
-            }
+            if (getActivity() != null) getActivity().runOnUiThread(() -> adapter.updateData(mealList));
         });
     }
 }

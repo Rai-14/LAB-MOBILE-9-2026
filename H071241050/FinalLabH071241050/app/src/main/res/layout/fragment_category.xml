@@ -1,33 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:background="?attr/colorSurface">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_categories"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="?attr/colorPrimaryContainer">
 
-    <LinearLayout
-        android:id="@+id/layout_error_category"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kategori"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnPrimaryContainer" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jelajahi resep berdasarkan jenis masakan"
+                android:textSize="14sp"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                android:alpha="0.8" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tidak ada koneksi internet"
-            android:textColor="?android:attr/textColorPrimary" />
-
-        <Button
-            android:id="@+id/btn_retry_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Coba Lagi"
-            android:layout_marginTop="16dp" />
-    </LinearLayout>
-</RelativeLayout>
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_categories"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="8dp" />
+        <LinearLayout
+            android:id="@+id/layout_error_category"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tidak ada koneksi internet" />
+            <Button
+                android:id="@+id/btn_retry_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Coba Lagi"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

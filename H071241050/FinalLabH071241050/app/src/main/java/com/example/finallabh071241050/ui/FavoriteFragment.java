@@ -52,17 +52,16 @@ public class FavoriteFragment extends Fragment {
         Executors.newSingleThreadExecutor().execute(() -> {
             if (getContext() == null) return;
 
-            // Mengambil data dari DB
+            // Menggunakan getInstance sesuai dengan struktur AppDatabase
             List<MealEntity> localData = AppDatabase.getInstance(getContext()).mealDao().getFavoriteMeals();
             List<Meal> mealList = new ArrayList<>();
 
-            // Mapping: PENTING - Pastikan semua field terisi agar Adapter bisa menampilkan data
             for (MealEntity e : localData) {
                 Meal m = new Meal();
                 m.idMeal = e.idMeal;
                 m.strMeal = e.strMeal;
                 m.strMealThumb = e.strMealThumb;
-                m.strCategory = e.strCategory; // JANGAN LUPA INI
+                m.strCategory = e.strCategory;
                 mealList.add(m);
             }
 

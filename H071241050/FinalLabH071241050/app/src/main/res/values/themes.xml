@@ -1,21 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Tema Utama -->
     <style name="Theme.FinalLabH071241050" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryContainer">#FFE0B2</item>
+        <item name="colorOnPrimaryContainer">@color/text_color</item>
+
         <item name="android:windowBackground">@color/background</item>
         <item name="android:textColorPrimary">@color/text_color</item>
         <item name="android:textColorSecondary">@color/text_color</item>
+        <item name="colorSurface">@color/background</item>
         <item name="colorSurfaceVariant">@color/surface_variant</item>
     </style>
 
-    <!-- Tema Splash Screen -->
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/background</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
         <item name="postSplashScreenTheme">@style/Theme.FinalLabH071241050</item>
     </style>
 
-    <!-- Style untuk Foto Profil Bulat -->
     <style name="CircleImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
